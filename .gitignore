@@ -1,0 +1,9 @@
+.DS_Store
+*.swp
+.idea/
+datadirs/
+cmd/encodeAbi/encodeAbi
+cmd/createContract/createContract
+cmd/exportUTC/exportUTC
+cmd/readContract/readContract
+cmd/writeContract/writeContract
