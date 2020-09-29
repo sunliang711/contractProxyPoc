@@ -15,7 +15,7 @@ func main() {
 	contractAddress := pflag.String("addr", "", "contract address")
 	abiPath := pflag.String("abi", "", "abi file path")
 	methodName := pflag.String("method", "", "method name")
-	args := pflag.String("args", "", "method args")
+	args := pflag.String("args", "", "method args, format: address:0x1234;uint256:3;address[]:0x1234,0x2345;")
 	gasPrice := pflag.Uint64("gasprice", 0, "gas price, 0 for suggest gas price")
 	nonce := pflag.Uint64("nonce", 0, "nonce, 0 for auto nonce")
 	gasLimit := pflag.Uint64("gaslimit", 3e8, "gas limit")
