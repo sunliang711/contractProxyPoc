@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"github.com/sirupsen/logrus"
@@ -38,7 +39,11 @@ func main() {
 	}
 	defer txMan.Close()
 
-	txMan.WriteContractSync(*sk, *contractAddress, string(abi), *methodName, *args, *gasPrice, *nonce, *gasLimit)
+	hash, gasUsed, err := txMan.WriteContractSync(*sk, *contractAddress, string(abi), *methodName, *args, *gasPrice, *nonce, *gasLimit)
+	if err != nil {
+		logrus.Fatalf("write contract error: %v", err)
+	}
+	fmt.Printf("hash: %v\ngasUsed: %d\n", hash, gasUsed)
 }
 
 func assertNoEmpty(val string, msg string) {

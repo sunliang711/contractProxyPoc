@@ -119,6 +119,7 @@ buildall(){
     _build writeContract
 }
 
+rpcURL="http://localhost:8546"
 create(){
     #Address:77c3e6dedbf1157026c7d8d4b66d6b19004b7b40 
     #PrivateKey:1979d4ce44d5fa7181310b0f8108a701c9bae2f793e86d0216d549eda714b002 
@@ -129,7 +130,6 @@ create(){
     sk2=$(perl -lne 'print $1 if /PrivateKey:(\w+)/' cmd/exportUTC/account2)
     addr2=$(perl -lne 'print $1 if /Address:(\w+)/' cmd/exportUTC/account2)
 
-    rpcURL="http://localhost:8546"
 cat<<-EOF
 	rpcURL: ${rpcURL}
 	addr1: ${addr1}
@@ -152,13 +152,29 @@ EOF
 
 read(){
     # read contract
-    ${this}/cmd/readContract/readContract --abi contracts/anc.abi --addr 0xA8a612149cDABf77920B49BE51b5a4ab52A00130 --args 'address:cd449a0cdb1c9b95a2bc2b531c565333e0c0bb0a' --method 'balanceOf' --fromAddr 'cd449a0cdb1c9b95a2bc2b531c565333e0c0bb0a' --rpc http://localhost:8546
+    local contractName=${1:?'missing contract name'}
+    local contractAddress=${2:?'missing contract address'}
+    local fromaddr=${3:?'missing from addr'}
+    local methodName=${4:?'missing method name'}
+    local args=${5}
+    if [ -n "${args}" ];then
+        local parg="--args ${args}"
+    fi
+    ${this}/cmd/readContract/readContract --rpc ${rpcURL} --abi contracts/${contractName}.abi --addr ${contractAddress} --fromaddr ${fromaddr} --method=${methodName} ${parg}
 }
 
 
 write(){
     # write contract
-    ${this}/cmd/writeContract/writeContract --abi contracts/anc.abi --addr 0xA8a612149cDABf77920B49BE51b5a4ab52A00130 --rpc http://localhost:8546 --method 'transfer' --args 'address:cd449a0cdb1c9b95a2bc2b531c565333e0c0bb0a;uint256:2' --sk '1979d4ce44d5fa7181310b0f8108a701c9bae2f793e86d0216d549eda714b002'
+    local contractName=${1:?'missing contract name'}
+    local contractAddress=${2:?'missing contract address'}
+    local sk=${3:?'missing sk'}
+    local methodName=${4:?'missing method name'}
+    local args=${5}
+    if [ -n "${args}" ];then
+        local parg="--args ${args}"
+    fi
+    ${this}/cmd/writeContract/writeContract --rpc ${rpcURL} --abi contracts/${contractName}.abi --addr ${contractAddress} --sk ${sk} --method ${methodName} ${parg}
 }
 
 
